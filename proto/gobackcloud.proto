@@ -1,0 +1,29 @@
+syntax = "proto3";
+package gobackcloud;
+option go_package = "../gobackcloud";
+
+message Backup {
+  string backupfile = 1;
+  string file_name = 2;
+}
+
+enum Status {
+  UNKNOW = 0;
+  OK = 1;
+  FAILED = 2;
+  INTERRUPED = 3;
+}
+
+message BackupRequest {
+  Backup database_backup = 1;
+}
+
+message BackupResponse {
+  string storage_path = 1;
+  Status status_backup = 2;
+  int32 writed_bytes = 3;
+}
+
+service BackupService {
+  rpc CreateBackup (BackupRequest) returns (BackupResponse) {};
+}
