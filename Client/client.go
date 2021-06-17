@@ -3,6 +3,7 @@ package main
 import (
 	gobackcloud "GoBackCloud/proto"
 	"context"
+	"flag"
 	"fmt"
 	"google.golang.org/genproto/googleapis/rpc/code"
 	"google.golang.org/grpc"
@@ -10,22 +11,15 @@ import (
 	"google.golang.org/grpc/status"
 	"io/ioutil"
 	"log"
-	"os"
 	"path"
 )
 
 func main() {
-	args := os.Args
-	bkorigin := args[2]
-	bkdestino := args[3]
-	server := args[1]
+	bkorigin := flag.String("bkorigen", "backup.sql", "Especifique el nombre del archivo local al que le hara backup")
+	bkdestino := flag.String("bkdestino", "backup.sql", "Especifique el nombre de como se guardara el backup en el servidor de storage")
+	server := flag.String("servidor", "localhost", "Especifique la IP del servidor al que se conectara por el puerto 50051")
 
-
-	if len(args) >= 5 {
-		log.Fatalln("error leyendo los args!!")
-	}
-
-	clientgrpc_conection, err := grpc.Dial(server+":50051", grpc.WithInsecure())
+	clientgrpc_conection, err := grpc.Dial(*server+":50051", grpc.WithInsecure())
 	if err != nil {
 		status.Errorf(
 				codes.Code(code.Code_ABORTED),
@@ -39,7 +33,7 @@ func main() {
 		log.Println("No se pudo obtener el Working Directory")
 	}
 
-	backupfile, err := ioutil.ReadFile(path.Join(bkorigin))
+	backupfile, err := ioutil.ReadFile(path.Join(*bkorigin))
 	if err != nil {
 		log.Fatalln("Error al leer el archivo de backup: ", err)
 	}
@@ -47,7 +41,7 @@ func main() {
 	req := &gobackcloud.BackupRequest{
 		DatabaseBackup: &gobackcloud.Backup{
 			Backupfile: fmt.Sprintf("%s", backupfile),
-			FileName:   bkdestino+".sql",
+			FileName:   *bkdestino+".sql",
 		},
 	}
 
