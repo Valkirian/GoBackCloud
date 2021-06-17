@@ -16,14 +16,16 @@ import (
 
 func main() {
 	args := os.Args
-	bkorigin := args[1]
-	bkdestino := args[2]
+	bkorigin := args[2]
+	bkdestino := args[3]
+	server := args[1]
 
-	if len(args) >= 4 {
+
+	if len(args) >= 5 {
 		log.Fatalln("error leyendo los args!!")
 	}
 
-	clientgrpc_conection, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
+	clientgrpc_conection, err := grpc.Dial(server+":50051", grpc.WithInsecure())
 	if err != nil {
 		status.Errorf(
 				codes.Code(code.Code_ABORTED),
@@ -51,7 +53,7 @@ func main() {
 
 	res, err := conection.CreateBackup(context.Background(), req)
 	if err != nil {
-		log.Println("Error llamando la funcion para crear el backup")
+		log.Fatalln("Error llamando la funcion para crear el backup")
 	}
 	fmt.Printf("Backup Guardado con los siguientes Datos: %v\n", res)
 
