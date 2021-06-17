@@ -33,12 +33,11 @@ func main() {
 	defer clientgrpc_conection.Close()
 	conection := gobackcloud.NewBackupServiceClient(clientgrpc_conection)
 
-	pth, err := os.Getwd()
 	if err != nil {
 		log.Println("No se pudo obtener el Working Directory")
 	}
 
-	backupfile, err := ioutil.ReadFile(path.Join(pth, "Client",bkorigin))
+	backupfile, err := ioutil.ReadFile(path.Join(bkorigin))
 	if err != nil {
 		log.Fatalln("Error al leer el archivo de backup: ", err)
 	}
