@@ -18,6 +18,7 @@ func main() {
 	bkorigin := flag.String("bkorigen", "backup.sql", "Especifique el nombre del archivo local al que le hara backup")
 	bkdestino := flag.String("bkdestino", "backup.sql", "Especifique el nombre de como se guardara el backup en el servidor de storage")
 	server := flag.String("servidor", "localhost", "Especifique la IP del servidor al que se conectara por el puerto 50051")
+	flag.Parse()
 
 	clientgrpc_conection, err := grpc.Dial(*server+":50051", grpc.WithInsecure())
 	if err != nil {
@@ -47,7 +48,7 @@ func main() {
 
 	res, err := conection.CreateBackup(context.Background(), req)
 	if err != nil {
-		log.Fatalln("Error llamando la funcion para crear el backup")
+		log.Fatalln("Error llamando la funcion para crear el backup", err)
 	}
 	fmt.Printf("Backup Guardado con los siguientes Datos: %v\n", res)
 
